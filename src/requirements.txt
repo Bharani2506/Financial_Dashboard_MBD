@@ -1,0 +1,10 @@
+numpy
+pandas
+plotly.graph_objects
+datetime
+yfinance
+streamlit
+pandas_datareader.data
+numerize
+plotly.subplots
+matplotlib.pyplot
