@@ -124,8 +124,6 @@ def render_header():
     # Add dashboard title and description
     #st.title("Marketing Insights💡")
     st.markdown("<h1 style='text-align: center; color: grey;'>Marketing Insights💡</h1>", unsafe_allow_html=True)
-    col1 = st.columns([1,5])
-    col1.write("Data source:")
     # Add the ticker selection on the sidebar
     # Get the list of stock tickers from S&P500
    
