@@ -4,6 +4,6 @@ plotly
 datetime
 yfinance
 streamlit
-pandas_datareader.data
+pandas-datareader
 numerize
 matplotlib
