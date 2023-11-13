@@ -146,9 +146,9 @@ def render_tab1():
     start_date = col2.date_input("Start date", datetime.today().date() - timedelta(days=30))
     end_date = col3.date_input("End date", datetime.today().date())
     # Show to stock image
-    col1, col2, col3 = st.columns([1, 3, 1])
-    col2.image('./img/stock.jpg', use_column_width=True,
-               caption='Company Stock Information')
+    col1 = st.columns([1, 3, 1])
+    #col2.image('./img/stock.jpg', use_column_width=True,
+               #caption='Company Stock Information')
     # Get the company information
     @st.cache_data
     def GetCompanyInfo(ticker):
