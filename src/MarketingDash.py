@@ -150,14 +150,14 @@ def render_tab1():
     #col2.image('./img/stock.jpg', use_column_width=True,
                #caption='Company Stock Information')
     # Get the company information
-    @st.cache_data
+    @st.cache_data_data
     def GetCompanyInfo(ticker):
         """
         This function get the company information from Yahoo Finance.
         """
         return YFinance(ticker).info
    # Get the stock price data for the selected duration
-    @st.cache_data
+    @st.cache_data_data
     def GetStockData(ticker, duration):
         end_date = datetime.today().date()
         if duration == '1M':
@@ -220,14 +220,23 @@ def render_tab1():
         ax.set_title(f'Stock Price Over Time ({selected_duration})')
         ax.legend()
         st.pyplot(fig)
-    @st.cache
-    def GetMajorHolders(ticker):
-        for tick in ticker:
-            holders = yf.Ticker(tick).major_holders
-            holders = holders.rename(columns={0:"Value", 1:"Breakdown"})
-            holders = holders.set_index('Breakdown')
-            holders.loc[['Number of Institutions Holding Shares']].style.format({'Number of Institutions Holding Shares': '{:0,.0f}'.format})
-        return holders
+    @st.cache_data
+    
+def GetMajorHolders(ticker):
+    holders = None
+    for tick in ticker:
+        data = yf.Ticker(tick).major_holders
+        if isinstance(data, pd.DataFrame) and not data.empty:
+            data = data.rename(columns={0: "Value", 1: "Breakdown"})
+            if 'Breakdown' in data.columns:
+                data = data.set_index('Breakdown')
+            else:
+                st.warning(f"No 'Breakdown' column found for {tick}")
+        else:
+            st.warning(f"No major holders data available for {tick}")
+        holders = data
+    return holders
+
     
    
     holders = GetMajorHolders([ticker])
@@ -313,7 +322,7 @@ def render_tab4():
 #==============================================================================
 # Tab 3
 #==============================================================================
-@st.cache_data
+@st.cache_data_data
 def get_stock_data(ticker, start_date, end_date):
     stock_df = yf.Ticker(ticker).history(start=start_date, end=end_date)
     stock_df.reset_index(inplace=True)
@@ -380,7 +389,7 @@ def render_tab2():
     interval = col5.selectbox("Select Interval", ['1d', '1mo', '1y'])
     plot = col6.selectbox("Select Plot", ['Candle', 'Line'])
     
-    @st.cache_data
+    @st.cache_data_data
     def GetStockData(ticker, start_date, end_date):
         stock_df = yf.Ticker(ticker).history(start=start_date, end=end_date)
         stock_df.reset_index(inplace=True)
@@ -464,7 +473,7 @@ def render_tab5():
     ticker = st.selectbox("Select a ticker", ticker_list, index=45, key=ticker_selectbox_key)
     tab1, tab2 = st.tabs(["Top Institutional Holders", "Top Mutual Fund Holders"])
     with tab1:
-        @st.cache
+        @st.cache_data
         def GetInstHolders(ticker):
             for tick in ticker:
                 inst_holders = yf.Ticker(tick).institutional_holders
@@ -479,7 +488,7 @@ def render_tab5():
         st.write('**Top Institutional Holders**')
         st.table(inst_holders)
     with tab2:
-        @st.cache
+        @st.cache_data
         def GetFundHolders(ticker):
             for tick in ticker:
                 fund_holders = yf.Ticker(tick).fund_holders
